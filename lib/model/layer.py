@@ -5,6 +5,23 @@ from transformer_lm.lib.model.layers.sublayer import MultiHeadAttention, Positio
 from transformer_lm.lib.model.layers.embedding import WordEmbedding, positional_embedding
 
 
+class BartEmbedding(nn.Module):
+    def __init__(self, vocab_size, d_m):
+        super(BartEmbedding, self).__init__()
+        self.word_emb = WordEmbedding(vocab_size, d_m)
+        self.dropout = nn.Dropout(p=0.1)
+
+    def forward(self, inp):
+        """
+        inp [bsize, maxlen]
+        """
+        # [bsize, maxlen, emb_dim]
+        idx_emb = self.word_emb(inp)
+        pe_emb = positional_embedding(idx_emb.size(0), idx_emb.size(1), idx_emb.size(2))
+        emb = idx_emb + pe_emb
+        return self.dropout(emb)
+
+
 class BartEncoderLayer(nn.Module):
     def __init__(self, d_m, d_ff, n_head):
         super(BartEncoderLayer, self).__init__()
@@ -48,20 +65,3 @@ class BartDecoderLayer(nn.Module):
         # Sub-layer 3
         out = self.pw_ff(out)
         return out
-
-
-class BartEmbedding(nn.Module):
-    def __init__(self, vocab_size, d_m):
-        super(BartEmbedding, self).__init__()
-        self.word_emb = WordEmbedding(vocab_size, d_m)
-        self.dropout = nn.Dropout(p=0.1)
-
-    def forward(self, inp):
-        """
-        inp [bsize, maxlen]
-        """
-        # [bsize, maxlen, emb_dim]
-        idx_emb = self.word_emb(inp)
-        pe_emb = positional_embedding(idx_emb.size(0), idx_emb.size(1), idx_emb.size(2))
-        emb = idx_emb + pe_emb
-        return self.dropout(emb)
