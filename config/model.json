@@ -1,8 +1,0 @@
-{
-  "d_m": 768,
-  "n_attn_heads": 12,
-  "n_layers": 12,
-  "epoch": 100,
-  "batch_size": 500,
-  "lr": 0.0001
-}
