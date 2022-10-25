@@ -1,4 +1,0 @@
-[submodule "transformer_lm"]
-	path = transformer_lm
-	url = git@github.com:tree-park/transformer_lm.git
-	branch = main
